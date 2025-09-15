@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resume Analyzer</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        .container { max-width: 800px; margin: auto; }
+        .results { margin-top: 2em; padding: 1em; border: 1px solid #ccc; border-radius: 5px; }
+        textarea { width: 100%; height: 150px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📄 Resume Analyzer</h1>
+        <p>Upload your resume to get suggested job roles and calculate an ATS score for a specific job description.</p>
+
+        <form method="post" enctype="multipart/form-data">
+            <label for="resume">Upload your Resume (PDF or TXT):</label>
+            <input type="file" name="resume" required>
+            <button type="submit">Analyze Resume</button>
+        </form>
+
+        {% if suggested_roles %}
+        <div class="results">
+            <h2>🤖 Suggested Job Roles</h2>
+            <ul>
+                {% for role in suggested_roles %}
+                    <li>{{ role }}</li>
+                {% endfor %}
+            </ul>
+            <hr>
+            <h3>🎯 Get ATS Score for a Specific Job</h3>
+            <form method="post" action="/score">
+                <textarea name="job_description" placeholder="Paste the full job description here..."></textarea><br><br>
+                <button type="submit">Calculate ATS Score</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if ats_results %}
+        <div class="results">
+            <h2>ATS Score Report</h2>
+            <h3>Your score is: {{ ats_results.score }}%</h3>
+            <p><strong>Matching Keywords:</strong> {{ ats_results.matching_keywords|join(', ') }}</p>
+            <p><strong>Missing Keywords:</strong> {{ ats_results.missing_keywords|join(', ') }}</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
